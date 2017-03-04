@@ -364,6 +364,14 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
     modelMatrix.scale(1, 1, 0.5); // Scale
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
+   
+   // add door
+  n = initVertexBuffers(gl, 0, 1, 0);
+  pushMatrix(modelMatrix);
+    modelMatrix.translate(.5, -.5, -1.25);  // Translation
+    modelMatrix.scale(2, 2, 0.2); // Scale
+    drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
+  modelMatrix = popMatrix();
   
 }
 
