@@ -46,6 +46,10 @@ var ANGLE_STEP = 3.0;  // The increments of rotation angle (degrees)
 var g_xAngle = 0.0;    // The rotation x angle (degrees)
 var g_yAngle = 0.0;    // The rotation y angle (degrees)
 
+var g_zoom_scale = 1.0
+var g_x = 0.0
+var g_wheelAngle = 0.0;
+
 function main() {
   // Retrieve <canvas> element
   var canvas = document.getElementById('webgl');
@@ -110,6 +114,10 @@ function main() {
   draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting);
 }
 
+function ascii (a) {
+  return a.charCodeAt(0);
+  }
+
 function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   switch (ev.keyCode) {
     case 40: // Up arrow key -> the positive rotation of arm1 around the y-axis
@@ -124,7 +132,31 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
     case 37: // Left arrow key -> the negative rotation of arm1 around the y-axis
       g_yAngle = (g_yAngle - ANGLE_STEP) % 360;
       break;
-    default: return; // Skip drawing at no effective action
+
+    case ascii('A'):
+      g_zoom_scale = g_zoom_scale * 0.9;
+      break;
+
+    case ascii('Z'):
+      g_zoom_scale = g_zoom_scale * 1.1;
+      break;
+    case ascii('P'):
+      g_x += 0.3;
+      g_wheelAngle = (g_wheelAngle - 15) % 360;
+      break;
+    case ascii('O'):
+      g_x -= 0.3;
+      g_wheelAngle = (g_wheelAngle + 15) % 360;
+      break;
+
+    case ascii('R'):
+        g_wheelAngle = (g_wheelAngle + 15) % 360;
+  console.log("g_wheelAngle now  %d", g_wheelAngle);
+      break;
+
+    default:
+      console.log("Un-mapped key %d %s", ev.keyCode, String.fromCharCode(ev.keyCode));
+      return; // Skip drawing at no effective action
   }
 
   // Draw the scene
@@ -229,7 +261,6 @@ function initArrayBuffer (gl, attribute, data, num, type) {
 }
 
 function initAxesVertexBuffers(gl) {
-
   var verticesColors = new Float32Array([
     // Vertex coordinates and color (for axes)
     -20.0,  0.0,   0.0,  1.0,  1.0,  1.0,  // (x,y,z), (r,g,b) 
@@ -240,7 +271,7 @@ function initAxesVertexBuffers(gl) {
      0.0,   0.0,  20.0,  1.0,  1.0,  1.0 
   ]);
   var n = 6;
-  
+ 
  
   // Create a buffer object
   var vertexColorBuffer = gl.createBuffer();  
@@ -315,11 +346,14 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   
   var n = 0
 
-  // Rotate, and then translate
-  modelMatrix.setTranslate(0, 0, 0);  // Translation (No translation is supported here)
-  modelMatrix.rotate(g_yAngle, 0, 1, 0); // Rotate along y axis
-  modelMatrix.rotate(g_xAngle, 1, 0, 0); // Rotate along x axis
+  // Rotate, translate and then scale
 
+  modelMatrix.setTranslate(g_x, 0, 0);
+  modelMatrix.rotate(g_yAngle, 0, 1, 0);
+  modelMatrix.rotate(g_xAngle, 1, 0, 0);
+  modelMatrix.scale(g_zoom_scale, g_zoom_scale, g_zoom_scale);
+
+  
   // Model the body main
   n = initVertexBuffers(gl, 1, 0, 0);
   pushMatrix(modelMatrix);
@@ -340,6 +374,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(-1.5, -1, 1);  // Translation
     modelMatrix.scale(1, 1, 0.5); // Scale
+    modelMatrix.rotate(g_wheelAngle, 0, 0, 1);
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
@@ -347,6 +382,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(-1.5, -1, -1);  // Translation
     modelMatrix.scale(1, 1, 0.5); // Scale
+    modelMatrix.rotate(g_wheelAngle, 0, 0, 1);
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
@@ -355,6 +391,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(1.5, -1, 1);  // Translation
     modelMatrix.scale(1, 1, 0.5); // Scale
+    modelMatrix.rotate(g_wheelAngle, 0, 0, 1);
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
@@ -362,6 +399,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(1.5, -1, -1);  // Translation
     modelMatrix.scale(1, 1, 0.5); // Scale
+    modelMatrix.rotate(g_wheelAngle, 0, 0, 1);
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
    
@@ -381,7 +419,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   modelMatrix = popMatrix();
   
 
-  
+ 
 }
 
 function drawbox(gl, u_ModelMatrix, u_NormalMatrix, n) {
