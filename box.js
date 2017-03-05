@@ -1,4 +1,4 @@
-// Directional lighting demo: By Frederick Li
+
 // Vertex shader program
 var VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
@@ -371,7 +371,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   modelMatrix.scale(g_zoom_scale, g_zoom_scale, g_zoom_scale);
 
   
-  // Model the body main
+ // Model the body main
   n = initVertexBuffers(gl, 1, 0, 0);
   pushMatrix(modelMatrix);
     modelMatrix.scale(5.0, 2.0, 2.0); // Scale
@@ -386,12 +386,12 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
-  // Model the front wheel
+ // Model the front wheel
   n = initVertexBuffers(gl, 0, 0, 1);
   pushMatrix(modelMatrix);
     modelMatrix.translate(-1.5, -1, 1);  // Translation
     modelMatrix.scale(1, 1, 0.5); // Scale
-    modelMatrix.rotate(g_wheelAngle, 0, 0, 1);
+    modelMatrix.rotate(g_wheelAngle, 0, 0, 1); //Rotate
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
@@ -399,7 +399,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(-1.5, -1, -1);  // Translation
     modelMatrix.scale(1, 1, 0.5); // Scale
-    modelMatrix.rotate(g_wheelAngle, 0, 0, 1);
+    modelMatrix.rotate(g_wheelAngle, 0, 0, 1); //Rotate
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
@@ -408,7 +408,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(1.5, -1, 1);  // Translation
     modelMatrix.scale(1, 1, 0.5); // Scale
-    modelMatrix.rotate(g_wheelAngle, 0, 0, 1);
+    modelMatrix.rotate(g_wheelAngle, 0, 0, 1); //Rotate
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
@@ -416,16 +416,16 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(1.5, -1, -1);  // Translation
     modelMatrix.scale(1, 1, 0.5); // Scale
-    modelMatrix.rotate(g_wheelAngle, 0, 0, 1);
+    modelMatrix.rotate(g_wheelAngle, 0, 0, 1); //Rotate
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
    
-   // add doors
+   // Model the doors
   n = initVertexBuffers(gl, 0, 1, 0);
   pushMatrix(modelMatrix);
     modelMatrix.translate(0, -.4, -1.25);  // Translation
     modelMatrix.scale(1.4, 1.2, 0.2); // Scale
-     modelMatrix.rotate(g_openDoor1, 0, 0, 1);
+     modelMatrix.rotate(g_openDoor1, 0, 0, 1); //Rotate
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
@@ -433,11 +433,10 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(0, -.4, 1.25);  // Translation
     modelMatrix.scale(1.4, 1.2, 0.2); // Scale
-    modelMatrix.rotate(g_openDoor2, 0, 0, 1);
+    modelMatrix.rotate(g_openDoor2, 0, 0, 1); //Rotate
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
-
  
 }
 
