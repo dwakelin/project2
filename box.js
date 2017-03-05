@@ -50,8 +50,8 @@ var g_zoom_scale = 1.0
 var g_x = 0.0
 var g_y = 0.0
 var g_wheelAngle = 0.0;
-var g_openDoor1 = 0.0;
-var g_openDoor2 = 0.0;
+var g_openDoor1 = false;
+var g_openDoor2 = false;
 
 function main() {
   // Retrieve <canvas> element
@@ -139,7 +139,6 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
     case ascii('O'): // O zooms out 
       g_zoom_scale = g_zoom_scale * 0.9;
       break;
-
     case ascii('I'):// I zooms in 
       g_zoom_scale = g_zoom_scale * 1.1;
       break;
@@ -159,16 +158,16 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
       g_y -= 0.3;
       g_wheelAngle = (g_wheelAngle + 15) % 360;
       break;
-
     case ascii('R'): // R rotates wheel 
-        g_wheelAngle = (g_wheelAngle + 15) % 360;
-  console.log("g_wheelAngle now  %d", g_wheelAngle);
+      g_wheelAngle = (g_wheelAngle + 15) % 360;
       break;
-      case ascii('D'): // D opens door 1
-        g_openDoor1 = (g_openDoor1 + 15) % 360;
+    case ascii('D'): // D opens door 1
+      if (g_openDoor1) g_openDoor1 = false
+      else g_openDoor1 = true;
       break;
-       case ascii('F'): // D opens door 2
-        g_openDoor2 = (g_openDoor2 + 15) % 360;
+    case ascii('F'): // F opens door 2
+      if (g_openDoor2) g_openDoor2 = false
+      else g_openDoor2 = true;
       break;
 
     default:
@@ -423,17 +422,27 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
    // Model the doors
   n = initVertexBuffers(gl, 0, 1, 0);
   pushMatrix(modelMatrix);
-    modelMatrix.translate(0, -.4, -1.25);  // Translation
-    modelMatrix.scale(1.4, 1.2, 0.2); // Scale
-     modelMatrix.rotate(g_openDoor1, 0, 0, 1); //Rotate
+    if (g_openDoor1) {
+      modelMatrix.rotate(60, 0, 1, 0);
+      modelMatrix.scale(1.4, 1.2, 0.2); // Scale
+      modelMatrix.translate(1, -.4, -4);  // Translation
+    } else {
+      modelMatrix.scale(1.4, 1.2, 0.2); // Scale
+      modelMatrix.translate(0, -.4, -5);  // Translation
+    }
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
   n = initVertexBuffers(gl, 0, 1, 0.5);
   pushMatrix(modelMatrix);
-    modelMatrix.translate(0, -.4, 1.25);  // Translation
-    modelMatrix.scale(1.4, 1.2, 0.2); // Scale
-    modelMatrix.rotate(g_openDoor2, 0, 0, 1); //Rotate
+    if (g_openDoor2) {
+      modelMatrix.rotate(-60, 0, 1, 0);
+      modelMatrix.scale(1.4, 1.2, 0.2); // Scale
+      modelMatrix.translate(.9, -.4, 5);  // Translation
+   } else {
+      modelMatrix.scale(1.4, 1.2, 0.2); // Scale
+      modelMatrix.translate(0, -.4, 5);  // Translation
+    }
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
