@@ -49,6 +49,8 @@ var g_yAngle = 0.0;    // The rotation y angle (degrees)
 var g_zoom_scale = 1.0
 var g_x = 0.0
 var g_wheelAngle = 0.0;
+var g_openDoor1 = 0.0;
+var g_openDoor2 = 0.0;
 
 function main() {
   // Retrieve <canvas> element
@@ -120,38 +122,44 @@ function ascii (a) {
 
 function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   switch (ev.keyCode) {
-    case 40: // Up arrow key -> the positive rotation of arm1 around the y-axis
+    case 40: // Up arrow key rotates car in positive x-axis
       g_xAngle = (g_xAngle + ANGLE_STEP) % 360;
       break;
-    case 38: // Down arrow key -> the negative rotation of arm1 around the y-axis
+    case 38: // Down arrow key rotates car in negative x-axis
       g_xAngle = (g_xAngle - ANGLE_STEP) % 360;
       break;
-    case 39: // Right arrow key -> the positive rotation of arm1 around the y-axis
+    case 39: // Right arrow key rotates car in positive y-axis
       g_yAngle = (g_yAngle + ANGLE_STEP) % 360;
       break;
-    case 37: // Left arrow key -> the negative rotation of arm1 around the y-axis
+    case 37: // Left arrow key rotates car in negative y-axis
       g_yAngle = (g_yAngle - ANGLE_STEP) % 360;
       break;
 
-    case ascii('O'):
+    case ascii('O'): // O zooms out 
       g_zoom_scale = g_zoom_scale * 0.9;
       break;
 
-    case ascii('I'):
+    case ascii('I'):// I zooms in 
       g_zoom_scale = g_zoom_scale * 1.1;
       break;
-    case ascii('S'):
+    case ascii('S'): // S moves backwards 
       g_x += 0.3;
       g_wheelAngle = (g_wheelAngle - 15) % 360;
       break;
-    case ascii('A'):
+    case ascii('A'): //A moves forwards
       g_x -= 0.3;
       g_wheelAngle = (g_wheelAngle + 15) % 360;
       break;
 
-    case ascii('R'):
+    case ascii('R'): // R rotates wheel 
         g_wheelAngle = (g_wheelAngle + 15) % 360;
   console.log("g_wheelAngle now  %d", g_wheelAngle);
+      break;
+      case ascii('D'): // D opens door 1
+        g_openDoor1 = (g_openDoor1 + 15) % 360;
+      break;
+       case ascii('F'): // D opens door 2
+        g_openDoor2 = (g_openDoor2 + 15) % 360;
       break;
 
     default:
@@ -408,6 +416,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(0, -.4, -1.25);  // Translation
     modelMatrix.scale(1.4, 1.2, 0.2); // Scale
+     modelMatrix.rotate(g_openDoor1, 0, 0, 1);
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
@@ -415,6 +424,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   pushMatrix(modelMatrix);
     modelMatrix.translate(0, -.4, 1.25);  // Translation
     modelMatrix.scale(1.4, 1.2, 0.2); // Scale
+    modelMatrix.rotate(g_openDoor2, 0, 0, 1);
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
   
