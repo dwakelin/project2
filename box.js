@@ -365,13 +365,22 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
    
-   // add door
+   // add doors
   n = initVertexBuffers(gl, 0, 1, 0);
   pushMatrix(modelMatrix);
-    modelMatrix.translate(.5, -.5, -1.25);  // Translation
-    modelMatrix.scale(2, 2, 0.2); // Scale
+    modelMatrix.translate(0, -.4, -1.25);  // Translation
+    modelMatrix.scale(1.4, 1.2, 0.2); // Scale
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
+  
+  n = initVertexBuffers(gl, 0, 1, 0.5);
+  pushMatrix(modelMatrix);
+    modelMatrix.translate(0, -.4, 1.25);  // Translation
+    modelMatrix.scale(1.4, 1.2, 0.2); // Scale
+    drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
+  modelMatrix = popMatrix();
+  
+
   
 }
 
