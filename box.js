@@ -48,6 +48,7 @@ var g_yAngle = 0.0;    // The rotation y angle (degrees)
 
 var g_zoom_scale = 1.0
 var g_x = 0.0
+var g_y = 0.0
 var g_wheelAngle = 0.0;
 var g_openDoor1 = 0.0;
 var g_openDoor2 = 0.0;
@@ -146,8 +147,16 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
       g_x += 0.3;
       g_wheelAngle = (g_wheelAngle - 15) % 360;
       break;
-    case ascii('A'): //A moves forwards
+    case ascii('A'): // A moves forwards
       g_x -= 0.3;
+      g_wheelAngle = (g_wheelAngle + 15) % 360;
+      break;
+    case ascii('W'): // W moves up
+      g_y += 0.3;
+      g_wheelAngle = (g_wheelAngle - 15) % 360;
+      break;
+    case ascii('Z'): // Z moves down 
+      g_y -= 0.3;
       g_wheelAngle = (g_wheelAngle + 15) % 360;
       break;
 
@@ -356,7 +365,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
 
   // Rotate, translate and then scale
 
-  modelMatrix.setTranslate(g_x, 0, 0);
+  modelMatrix.setTranslate(g_x, g_y, 0);
   modelMatrix.rotate(g_yAngle, 0, 1, 0);
   modelMatrix.rotate(g_xAngle, 1, 0, 0);
   modelMatrix.scale(g_zoom_scale, g_zoom_scale, g_zoom_scale);
