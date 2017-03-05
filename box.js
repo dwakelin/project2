@@ -133,18 +133,18 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
       g_yAngle = (g_yAngle - ANGLE_STEP) % 360;
       break;
 
-    case ascii('A'):
+    case ascii('O'):
       g_zoom_scale = g_zoom_scale * 0.9;
       break;
 
-    case ascii('Z'):
+    case ascii('I'):
       g_zoom_scale = g_zoom_scale * 1.1;
       break;
-    case ascii('P'):
+    case ascii('S'):
       g_x += 0.3;
       g_wheelAngle = (g_wheelAngle - 15) % 360;
       break;
-    case ascii('O'):
+    case ascii('A'):
       g_x -= 0.3;
       g_wheelAngle = (g_wheelAngle + 15) % 360;
       break;
