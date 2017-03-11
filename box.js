@@ -46,7 +46,7 @@ var ANGLE_STEP = 3.0;  // The increments of rotation angle (degrees)
 var g_xAngle = 0.0;    // The rotation x angle (degrees)
 var g_yAngle = 0.0;    // The rotation y angle (degrees)
 
-var g_zoom_scale = 1.0
+var g_zoom_scale = 0.6
 var g_x = 0.0
 var g_y = 0.0
 var g_wheelAngle = 0.0;
@@ -122,6 +122,11 @@ function ascii (a) {
   }
 
 function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
+//  console.log("g_xAngle=%f, g_yAngle=%f, g_x=%f, g_zoom_scale=%f, d=%f", g_xAngle, g_yAngle, g_x, g_zoom_scale, g_x *  g_zoom_scale);
+
+  saved_x = g_x;
+  saved_zoom_scale = g_zoom_scale;
+
   switch (ev.keyCode) {
     case 40: // Up arrow key rotates car in positive x-axis
       g_xAngle = (g_xAngle + ANGLE_STEP) % 360;
@@ -136,20 +141,27 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
       g_yAngle = (g_yAngle - ANGLE_STEP) % 360;
       break;
 
+/*
     case ascii('O'): // O zooms out 
       g_zoom_scale = g_zoom_scale * 0.9;
       break;
     case ascii('I'):// I zooms in 
       g_zoom_scale = g_zoom_scale * 1.1;
       break;
+*/
     case ascii('S'): // S moves backwards 
-      g_x += 0.3;
+      radians = (g_yAngle * Math.PI) / 180
+      g_x += 0.3 * Math.cos(radians);
+      g_zoom_scale = g_zoom_scale * (1 - Math.sin(radians)/20);
       g_wheelAngle = (g_wheelAngle - 15) % 360;
       break;
     case ascii('A'): // A moves forwards
-      g_x -= 0.3;
+      radians = (g_yAngle * Math.PI) / 180
+      g_x -= 0.3 * Math.cos(radians);
+      g_zoom_scale = g_zoom_scale * (1 + Math.sin(radians)/20);
       g_wheelAngle = (g_wheelAngle + 15) % 360;
       break;
+/*
     case ascii('W'): // W moves up
       g_y += 0.3;
       g_wheelAngle = (g_wheelAngle - 15) % 360;
@@ -158,6 +170,7 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
       g_y -= 0.3;
       g_wheelAngle = (g_wheelAngle + 15) % 360;
       break;
+*/
     case ascii('R'): // R rotates wheel 
       g_wheelAngle = (g_wheelAngle + 15) % 360;
       break;
@@ -173,6 +186,16 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
     default:
       console.log("Un-mapped key %d %s", ev.keyCode, String.fromCharCode(ev.keyCode));
       return; // Skip drawing at no effective action
+  }
+
+  // stop going of the edge or getting too small / big
+  edge = 2;
+  if (g_zoom_scale < 0.4) edge = 1.1;
+  else if (g_zoom_scale > 0.7) edge = 2.9;
+
+  if ((Math.abs(g_x *  g_zoom_scale) > edge) || (g_zoom_scale < 0.25) || (g_zoom_scale > 1.5)) {
+    g_x = saved_x;
+    g_zoom_scale = saved_zoom_scale ;
   }
 
   // Draw the scene
@@ -361,6 +384,14 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
   gl.uniform1i(u_isLighting, true); // Will apply lighting
   
   var n = 0
+
+  // show ground
+  n = initVertexBuffers(gl, 0, 1, 0);
+  pushMatrix(modelMatrix);
+    modelMatrix.translate(0, -2, 0);  // Translation
+    modelMatrix.scale(20.0, 2.0, 5.0); // Scale
+    drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
+  modelMatrix = popMatrix();
 
   // Rotate, translate and then scale
 
